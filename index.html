@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AMADEUS APAC FLIGHT MAP</title>
+<meta http-equiv="refresh" content="600">
+<link rel="stylesheet" href="src/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+<img class="center-fit" src="src/background.png">
+<div class="pb_box">
+    <p id="count_text2" class="customfont"></p>
+
+</div>
+<div class="pb">
+    <p class="countUpMe" ></p>
+
+</div>
+<div class="holder">
+
+  <object type="text/html" data="https://www.flightradar24.com/simple?lat=8.3&lon=113.4&z=4&filter_callsign=GAP,MDA,AIC,UIA,EVA,CAL,CPA,FJI,GIA,UZB,SOL,JAC,JAL,SJX,KZR,KAL,MAS,AVN,ANA,JTA,MGL,AAR,BKP,PAL,SOY,QFA,BAV,ACI,SIA,THA,THT,VTI,ALK,VTA,THD,FFM,HKE,JST,AXM,IGO,JSA,TGW,XAX,JJP,SEJ,CEB,AXB,CTV,MYM,ESR,GOW,JJA,AKJ,TTW, HVN" class="frame" />
+  
+</div>
+
+
+<script>
+
+
+//CUSTOMIZABLE VARIABLES
+var pb_year = 673000000; //PLEASE SPECIFY THE TOTAL NUMBER OF PB ESTIMATED FOR THE YEAR
+
+
+//OTHER VARIABLE
+var current_year = new Date().getFullYear();
+var now = new Date();
+var start = new Date(now.getFullYear(), 0, 0);
+var diff = now - start; // how many miliseconds passed in the current year
+var oneDay = 1000 * 60 * 60 * 24; // const: how many miliseconds in 1 day
+var oneMinute = 1000 * 60; //const: how many miliseconds in 1 minute
+var day = Math.floor(diff / oneDay); //how many days passed in the year
+var minute = Math.floor(diff / oneMinute);//how many minutes passed in the year
+var pb_day = pb_year/365; //pb per day
+var pb_minute = pb_year/365/24/60; //pb per minute
+var start_val= minute*pb_minute;//how many pb until the current minute in the year
+var end_val= (minute+60*24)*pb_minute; //how many pb until the following day at the same minute.
+const date = new Date();
+const formattedDate = date.toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric'
+}).replace(/ /g, ' ');
+
+$('.countUpMe').each(function() {
+    // no need to specify options unless they differ from the defaults
+    var target = this;
+    theAnimation = new countUp(target, start_val, end_val, 0, 24*60*60);
+    theAnimation.start();
+});
+
+$('#count_text2').text( formattedDate);
+
+// countUp.min.js
+function countUp(a,b,c,d,e,f){this.options=f||{useEasing:!0,useGrouping:!0,separator:",",decimal:"."};for(var g=0,h=["webkit","moz","ms"],i=0;i<h.length&&!window.requestAnimationFrame;++i)window.requestAnimationFrame=window[h[i]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[h[i]+"CancelAnimationFrame"]||window[h[i]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(a){var c=(new Date).getTime(),d=Math.max(0,16-(c-g)),e=window.setTimeout(function(){a(c+d)},d);return g=c+d,e}),window.cancelAnimationFrame||(window.cancelAnimationFrame=function(a){clearTimeout(a)});var j=this;this.d="string"==typeof a?document.getElementById(a):a,this.startVal=Number(b),this.endVal=Number(c),this.countDown=this.startVal>this.endVal?!0:!1,this.startTime=null,this.timestamp=null,this.remaining=null,this.frameVal=this.startVal,this.rAF=null,this.decimals=Math.max(0,d||0),this.dec=Math.pow(10,this.decimals),this.duration=1e3*e||2e3,this.easeOutExpo=function(a,b,c,d){return 1024*c*(-Math.pow(2,-10*a/d)+1)/1023+b},this.count=function(a){null===j.startTime&&(j.startTime=a),j.timestamp=a;var b=a-j.startTime;if(j.remaining=j.duration-b,j.options.useEasing)if(j.countDown){var c=j.easeOutExpo(b,0,j.startVal-j.endVal,j.duration);j.frameVal=j.startVal-c}else j.frameVal=j.easeOutExpo(b,j.startVal,j.endVal-j.startVal,j.duration);else if(j.countDown){var c=(j.startVal-j.endVal)*(b/j.duration);j.frameVal=j.startVal-c}else j.frameVal=j.startVal+(j.endVal-j.startVal)*(b/j.duration);j.frameVal=Math.round(j.frameVal*j.dec)/j.dec,j.frameVal=j.countDown?j.frameVal<j.endVal?j.endVal:j.frameVal:j.frameVal>j.endVal?j.endVal:j.frameVal,j.d.innerHTML=j.formatNumber(j.frameVal.toFixed(j.decimals)),b<j.duration?j.rAF=requestAnimationFrame(j.count):null!=j.callback&&j.callback()},this.start=function(a){return j.callback=a,isNaN(j.endVal)||isNaN(j.startVal)?(console.log("countUp error: startVal or endVal is not a number"),j.d.innerHTML="--"):j.rAF=requestAnimationFrame(j.count),!1},this.stop=function(){cancelAnimationFrame(j.rAF)},this.reset=function(){j.startTime=null,cancelAnimationFrame(j.rAF),j.d.innerHTML=j.formatNumber(j.startVal.toFixed(j.decimals))},this.resume=function(){j.startTime=null,j.duration=j.remaining,j.startVal=j.frameVal,requestAnimationFrame(j.count)},this.formatNumber=function(a){a+="";var b,c,d,e;if(b=a.split("."),c=b[0],d=b.length>1?j.options.decimal+b[1]:"",e=/(\d+)(\d{3})/,j.options.useGrouping)for(;e.test(c);)c=c.replace(e,"$1"+j.options.separator+"$2");return c+d},j.d.innerHTML=j.formatNumber(j.startVal.toFixed(j.decimals))}
+</script>
+</body>
+</html>
